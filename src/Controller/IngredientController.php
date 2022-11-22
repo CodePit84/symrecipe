@@ -22,9 +22,12 @@ class IngredientController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/ingredient', name: 'ingredient', methods: ['GET'])]
-    public function index(IngredientRepository $repository, PaginatorInterface $paginator, Request $request): Response
-    {
+    #[Route('/ingredient', name: 'ingredient.index', methods: ['GET'])]
+    public function index(
+        IngredientRepository $repository, 
+        PaginatorInterface $paginator, 
+        Request $request
+    ): Response {
         $ingredients = $paginator->paginate(
             $repository->findAll(),
             $request->query->getInt('page', 1), /*page number*/
@@ -64,7 +67,7 @@ class IngredientController extends AbstractController
                 'Votre ingrédient a été créé avec succès !'
             );
 
-            return $this->redirectToRoute('ingredient'); // ingredient.index
+            return $this->redirectToRoute('ingredient.index');
 
         }
 
@@ -73,8 +76,17 @@ class IngredientController extends AbstractController
         ]);
     }
 
+    
+    /**
+     * This controller allow us to edit an ingredient
+     *
+     * @param Ingredient $ingredient
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/ingredient/edition/{id}', 'ingredient.edit', methods: ['GET', 'POST'])]
-    public function edit(
+     public function edit(
         Ingredient $ingredient, 
         Request $request, 
         EntityManagerInterface $manager
@@ -93,7 +105,7 @@ class IngredientController extends AbstractController
                 'Votre ingrédient a été modifié avec succès !'
             );
 
-            return $this->redirectToRoute('ingredient'); // ingredient.index
+            return $this->redirectToRoute('ingredient.index');
         }
 
         return $this->render('pages/ingredient/edit.html.twig', [
@@ -101,6 +113,13 @@ class IngredientController extends AbstractController
         ]);
     }
 
+    /**
+     * This controller allow us to delete an ingredient
+     *
+     * @param EntityManagerInterface $manager
+     * @param Ingredient $ingredient
+     * @return Response
+     */
     #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET'])]
     public function delete(
         EntityManagerInterface $manager, 
@@ -114,6 +133,6 @@ class IngredientController extends AbstractController
             'Votre ingrédient a été supprimé avec succès !'
         );
 
-        return $this->redirectToRoute('ingredient'); // ingredient.index
+        return $this->redirectToRoute('ingredient.index');
     }
 }
