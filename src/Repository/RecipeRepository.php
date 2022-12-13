@@ -21,23 +21,23 @@ class RecipeRepository extends ServiceEntityRepository
         parent::__construct($registry, Recipe::class);
     }
 
-    public function save(Recipe $entity, bool $flush = false): void
+    /**
+     * This method allow us to find public recipes based on number of recipes
+     *
+     * @param integer $nbRecipes
+     * @return array
+     */
+    public function findPublicRecipe(?int $nbRecipes) : array
     {
-        $this->getEntityManager()->persist($entity);
+        $queryBuilder = $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->orderBy('r.createdAt', 'DESC');
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        if($nbRecipes !== 0 || $nbRecipes !== null) {
+            $queryBuilder->setMaxResults($nbRecipes);
         }
+            return $queryBuilder->getQuery()
+            ->getResult();
     }
-
-    public function remove(Recipe $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
 
 }
