@@ -7,8 +7,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Recipe>
- *
  * @method Recipe|null find($id, $lockMode = null, $lockVersion = null)
  * @method Recipe|null findOneBy(array $criteria, array $orderBy = null)
  * @method Recipe[]    findAll()
@@ -27,17 +25,19 @@ class RecipeRepository extends ServiceEntityRepository
      * @param integer $nbRecipes
      * @return array
      */
-    public function findPublicRecipe(?int $nbRecipes) : array
+    public function findPublicRecipe(?int $nbRecipes): array
     {
+        sleep(3);
         $queryBuilder = $this->createQueryBuilder('r')
             ->where('r.isPublic = 1')
             ->orderBy('r.createdAt', 'DESC');
 
-        if($nbRecipes !== 0 || $nbRecipes !== null) {
+
+        if ($nbRecipes !== 0 || $nbRecipes !== null) {
             $queryBuilder->setMaxResults($nbRecipes);
         }
-            return $queryBuilder->getQuery()
+
+        return $queryBuilder->getQuery()
             ->getResult();
     }
-
 }
